@@ -1,20 +1,23 @@
 # To run the container:
-# docker run -e COMMANDER_PASSWORD='CHANGE_THIS_PASSWORD' \
-#   -e PROVIDERS_AWSEC2_ACCESSKEYID='YOUR ACCESS KEY ID' \
-#   -e PROVIDERS_AWSEC2_SECRETACCESSKEY='YOUR SECRET ACCESS KEY' \
-#   -it -p 8888 -p 8889 fabienvauchelles/scrapoxy
+# docker run -e COMMANDER_PASSWORD='sampass' \
+#     -e PROVIDERS_AWSEC2_ACCESSKEYID='xxxx' \
+#     -e PROVIDERS_AWSEC2_SECRETACCESSKEY='xxxx' \
+#     -e PROVIDERS_AWSEC2_REGION='eu-west-1' \
+#     -e PROVIDERS_AWSEC2_INSTANCE_INSTANCETYPE='t2.nano' \
+#     -e PROVIDERS_AWSEC2_INSTANCE_IMAGEID='ami-06220275' \
+#     -e INSTANCE_SCALING_MAX=1 \
+#     -it -p 8888:8888 -p 8889:8889 samgabrail/scrapoxy
 
 FROM mhart/alpine-node:8
 EXPOSE 8888 8889
+LABEL maintainer="Sam Gabrail"
+WORKDIR /app
 
-
-# Install Scrapoxy
-RUN npm install -g scrapoxy
-
+# Install Scrapoxy and dotenv
+RUN npm install -g scrapoxy && npm install dotenv
 
 # Add configuration
-ADD tools/docker/config.js .
-
+COPY tools/docker/config.js /app
 
 # Start scrapoxy
-CMD scrapoxy start config.js -d
+CMD scrapoxy start /app/config.js -d
