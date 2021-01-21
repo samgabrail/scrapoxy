@@ -68,7 +68,7 @@ module.exports = class ProviderDigitalOcean {
                 id: droplet.id.toString(),
                 status: droplet.status,
                 locked: droplet.locked,
-                ip: _.get(droplet, 'networks.v4[0].ip_address'),
+                ip: _.get(_.find(_.get(droplet,'networks.v4'), _.matchesProperty('type', 'public')),'ip_address'),
                 name: droplet.name,
                 region: droplet.region.slug,
             }));
